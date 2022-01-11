@@ -1,0 +1,17 @@
+.apt_generated
+.factorypath
+.springBeans
+
+*.iml
+*.ipr
+*.iws
+.idea
+.classpath
+.project
+.settings/
+bin/
+*.log
+tmp/
+*rebel.xml*
+mysql/data/
+tp6/runtime/cache

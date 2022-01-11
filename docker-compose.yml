@@ -1,0 +1,67 @@
+# tell docker what version of the docker-compose.yml were using
+version: '3.3'
+
+# define the network
+networks:
+  web-network:
+  #  ipam:
+  #    config:
+  #      - subnet: 172.17.0.0/24
+
+
+# start the services section
+services:
+  # define the name of our service
+  # corresponds to the "--name" parameter
+  mydocker-nginx:
+    build:
+      context: ./nginx
+    # defines the port mapping
+    # corresponds to the "-p" flag
+    ports:
+      - "80:80"
+    tty: true
+    volumes:
+      - ./tp6:/var/www
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx
+    networks:
+      - web-network
+    depends_on:
+      - mydocker-php-fpm
+
+  mydocker-php-fpm:
+    build: 
+      context: ./php-fpm
+    tty: true
+    volumes:
+      - ./tp6:/var/www
+    networks:
+      - web-network
+    depends_on:
+      - mysql
+  mysql:
+      image: mysql:8.0.26
+      ports:
+        - "3306:3306"
+        - "33060:33060"
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - TZ=Asia/Shanghai
+      volumes:
+        - ./mysql/data:/var/lib/mysql
+        - ./mysql/conf:/etc/mysql/conf.d
+      networks:
+        - web-network
+        #  ipv4_address: 172.17.17.17
+      container_name: "mydocker-mysql"
+      restart: always
+
+
+  echo "# test4" >> README.md
+  git init
+  git add *
+  git commit -m "first commit"
+  git branch -M main
+  git remote add origin https://github.com/danel109/test4.git
+  git push -u origin main
